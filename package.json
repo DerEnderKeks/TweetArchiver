@@ -1,0 +1,19 @@
+{
+  "name": "tweetarchiver",
+  "version": "0.0.0",
+  "description": "TweetArchiver",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --harmony-async-await index.js"
+  },
+  "author": "DerEnderKeks",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^1.25.1",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.8.1",
+    "phantom": "^4.0.0",
+    "queue": "^4.2.1",
+    "twitter": "^1.7.0"
+  }
+}

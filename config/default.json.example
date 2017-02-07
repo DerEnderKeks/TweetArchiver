@@ -1,0 +1,17 @@
+{
+  "db": {
+    "address": "127.0.0.1",
+    "port": 27017,
+    "db": "tweetarchiver",
+    "username": "",
+    "password": ""
+  },
+  "twitter": {
+    "consumer_key": "YOUR CONSUMER KEY HERE",
+    "consumer_secret": "YOUR CONSUMER SECRET HERE",
+    "bearer_token": "YOUR BEARER TOKEN HERE"
+  },
+  "trackedUsers": [
+    "realDonaldTrump"
+  ]
+}
