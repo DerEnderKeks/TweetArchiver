@@ -1,0 +1,13 @@
+[Unit]
+Description=TweetArchiver
+Requires=network.target docker.service
+After=network.target docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/docker-compose -f /opt/TweetArchiver/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f /opt/TweetArchiver/docker-compose.yml stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
