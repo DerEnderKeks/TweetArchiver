@@ -1,0 +1,20 @@
+extends layout
+
+block content
+
+  if users === undefined
+    - users = []
+  .container
+    if !users.length
+      span no users tracked :(
+    else
+      .list-group
+        each user in users
+          a.list-group-item(href='/' + user.screen_name)
+            .media
+              .media-left
+                img.media-object(src='https://twitter.com/' + user.screen_name + '/profile_image?size=bigger')
+              .media-body
+                span.twitter-name= user.name
+                span.twitter-handle= '@' + user.screen_name
+                span.twitter-description= user.description

@@ -1,8 +1,12 @@
-.idea
-node_modules
-database
+/.idea/
+/node_modules/
+/database/
+/server/cache/*
 
 *.log
 npm-debug.log
 
-config/*.json
+/config/*.json
+
+
+!/server/cache/.keep

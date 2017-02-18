@@ -1,0 +1,72 @@
+extends layout
+
+
+block content
+
+  - var entities = new require('html-entities').AllHtmlEntities;
+
+  if tweets === undefined
+    - tweets = []
+
+  if user === undefined
+    - user = {}
+
+  .container
+    .row
+      .col-xs-12.col-md-4
+        .panel.panel-default
+          .panel-body
+            .media
+              .media-left
+                img.media-object(src='https://twitter.com/' + user.screen_name + '/profile_image?size=bigger')
+              .media-body
+                div
+                  a.twitter-name(href='https://twitter.com/' + user.screen_name)= user.name
+                  if user.verified
+                    i.fa.fa-after.fa-verified.fa-check(aria-hidden='true')
+                span.twitter-handle= '@' + user.screen_name
+                span.twitter-description= user.description
+      .col-xs-12.col-md-8
+        .list-group
+          each tweet in tweets
+            li.list-group-item
+              - tweet.text = entities.decode(tweet.text)
+              p= tweet.text
+              hr
+              div
+                i.fa.fa-before.fa-calendar(aria-hidden='true')
+                span= tweet.created_at
+              div
+                i.fa.fa-before.fa-twitter(aria-hidden='true')
+                span= 'view on '
+                a(href='https://twitter.com/' + user.screen_name + '/status/' + tweet.id_str, target= '_blank') twitter.com
+              div
+                i.fa.fa-before.fa-archive(aria-hidden='true')
+                span= 'view on '
+                a(href=tweet.archive_link || 'https://web.archive.org/web/*/https://twitter.com/' + user.screen_name + '/status/' + tweet.id_str, target= '_blank') archive.org
+    .row
+      .col-sm-12
+        nav(aria-label='Page navigation')
+          .text-center
+            ul.pagination
+              li
+                a(href=page - 1, aria-label='Previous')
+                  span(aria-hidden='true') &laquo;
+              - var n = 1;
+              while n < pages && n < 8
+                li
+                  a(href=n, class= n == page ? 'active' : 'active')= n++
+              if pages == 9 || pages == 10
+                li
+                  a(href=9, class= n == page ? 'active' : '')= 9
+                if pages == 10
+                  li
+                    a(href=10, class= n == page ? 'active' : '')= 10
+              else if pages > 10
+                li
+                  a(href='#!') ...
+                li
+                  a(href=pages, class= n == page ? 'active' : '')= pages
+              li
+                a(href=page + 1, aria-label='Next')
+                  span(aria-hidden='true') &raquo;

@@ -1,6 +1,6 @@
 # TweetArchiver
 
-Well, it archives tweets. Can't tell you anything the name didn't already told you.
+Well, it archives tweets. Can't tell you anything the name didn't already tell you.
 
 ---
 

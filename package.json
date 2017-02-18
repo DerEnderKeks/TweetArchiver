@@ -10,10 +10,16 @@
   "license": "MIT",
   "dependencies": {
     "config": "^1.25.1",
+    "express": "^4.14.1",
+    "express-minify": "^0.2.0",
+    "http-status-codes": "^1.1.6",
     "lodash": "^4.17.4",
     "mongoose": "^4.8.1",
+    "morgan": "^1.8.1",
     "phantom": "^4.0.0",
+    "pug": "^2.0.0-beta11",
     "queue": "^4.2.1",
+    "serve-favicon": "^2.3.2",
     "twitter": "^1.7.0"
   }
 }

@@ -3,6 +3,8 @@ services:
   web:
     build: .
     command: ["npm", "start"]
+    ports:
+      - "3000:3000"
   db:
     image: "mongo:latest"
     volumes:

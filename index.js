@@ -2,14 +2,15 @@ const Twitter = require('twitter');
 const config = require('config');
 const phantom = require('phantom');
 const queue = require('queue');
+const path = require('path');
 
 let q = queue({
   concurrency: config.get('archival.parallel'),
   autostart: true,
 });
 
-const Tweet = require('./lib/schemas/tweetSchema');
-const User = require('./lib/schemas/userSchema');
+const User = require(path.join(__dirname, 'lib', 'schemas', 'userSchema'));
+const Tweet = require(path.join(__dirname, 'lib', 'schemas', 'tweetSchema'));
 
 const twitter = new Twitter(config.get('twitter'));
 
@@ -19,6 +20,7 @@ const trackTweets = (_user) => {
       if (err) return console.error(err);
       if (result
         && (result.screen_name != user.screen_name
+        || result.name != user.name
         || result.description != user.description
         || result.url != user.url
         || result.location != user.location
@@ -32,6 +34,7 @@ const trackTweets = (_user) => {
     new User({
       id_str: user.id_str,
       screen_name: user.screen_name,
+      name: user.name,
       description: user.description,
       url: user.url,
       location: user.location,
@@ -48,6 +51,7 @@ const trackTweets = (_user) => {
       id_str: user.id_str
     }).update({
       screen_name: user.screen_name,
+      name: user.name,
       description: user.description,
       url: user.url,
       location: user.location,
@@ -108,17 +112,21 @@ const trackTweets = (_user) => {
           });
         });
       });
-    }, 10 * 1000);
+    }, config.get('archival.interval') * 1000);
   };
 
   findUser(_user);
 };
 
-config.get('trackedUsers').forEach((user) => {
-  twitter.get('users/lookup', {screen_name: user}, (error, result, response) => {
-    if (error || !result ) console.error(`Failed to lookup user '${user}'!`);
-    result.forEach((user) => {
-      trackTweets(user);
+if (config.get('web.enabled')) require(path.join(__dirname, 'server', 'server.js'));
+
+if (config.get('archival.enabled')) process.nextTick(() => {
+  config.get('trackedUsers').forEach((user) => {
+    twitter.get('users/lookup', {screen_name: user}, (error, result, response) => {
+      if (error || !result ) console.error(`Failed to lookup user '${user}'!`);
+      result.forEach((user) => {
+        trackTweets(user);
+      });
     });
   });
 });

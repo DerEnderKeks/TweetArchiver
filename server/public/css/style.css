@@ -1,0 +1,37 @@
+body {
+    padding-top: 75px;
+}
+
+.twitter-name {
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 400;
+}
+
+.twitter-handle {
+    display: block;
+    line-height: 1;
+    font-size: 13px;
+    font-weight: 100;
+}
+
+.twitter-description {
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    margin-top: 10px;
+}
+
+.fa-before {
+    margin-right: 3px;
+}
+
+.fa-after {
+    margin-left: 3px;
+}
+
+.fa-verified {
+    font-size: 20px;
+    line-height: 1.3;
+}
