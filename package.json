@@ -1,6 +1,6 @@
 {
   "name": "tweetarchiver",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "TweetArchiver",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "config": "^1.25.1",
     "express": "^4.14.1",
     "express-minify": "^0.2.0",
+    "html-entities": "^1.2.0",
     "http-status-codes": "^1.1.6",
     "lodash": "^4.17.4",
     "mongoose": "^4.8.1",
