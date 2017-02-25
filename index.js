@@ -119,11 +119,17 @@ const trackTweets = (_user) => {
       });
   };
 
+  const calculateInterval = () => {
+    const userCount = config.get('trackedUsers').length;
+    const interval = Math.ceil(((60 * 15) / 1450) * userCount) * 1000;
+    return Math.max(5000, interval);
+  };
+
   const startInterval = (user) => {
     fetchTweets(user);
     setInterval(() => {
       fetchTweets(user);
-    }, config.get('archival.interval') * 1000);
+    }, calculateInterval());
   };
 
   findUser(_user);

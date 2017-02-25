@@ -16,7 +16,6 @@
   ],
   "archival": {
     "parallel": 3,
-    "interval": 10,
     "enabled": true
   },
   "web": {
