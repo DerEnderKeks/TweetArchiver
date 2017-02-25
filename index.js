@@ -62,56 +62,67 @@ const trackTweets = (_user) => {
     })
   };
 
-  const startInterval = (user) => {
-    setInterval(() => {
-      twitter.get('statuses/user_timeline', {user_id: _user.id_str, count: 200}, (error, result, response) => {
-        if (error || !result) return;
-        result.forEach((tweet) => {
-          if (tweet.user.id_str != user.id_str || !tweet || !tweet.id_str) return;
-          Tweet.findOne({id_str: tweet.id_str}, (err, result) => {
-            if (err) return console.error(err);
-            if (result) return;
-            new Tweet({
-              id_str: tweet.id_str,
-              coordinates: tweet.coordinates,
-              created_at: tweet.created_at,
-              possibly_sensitive: tweet.possibly_sensitive,
-              source: tweet.source,
-              scopes: tweet.scopes,
-              text: tweet.text,
-              _user: user._id,
-            }).save((err, result) => {
-              if (err) return console.error(`Failed to save new tweet from user '${user.screen_name}'!`);
-              console.log(`Saved new tweet from user '${user.screen_name}'!`);
-              q.push((cb) => {
-                (async function() {
-                  console.log(`Archiving tweet ${tweet.id_str}...`);
-                  const instance = await phantom.create();
-                  const page = await instance.createPage();
-                  await page.on("onResourceRequested", function(requestData) {
-                    //console.info('Requesting', requestData.url)
-                  });
+  const fetchTweets = (user) => {
+    Tweet.findOne({_user: user._id})
+      .sort({created_at: -1})
+      .exec((err, result) => {
+        if (err) return;
+        if (!result) result = {id_str: '0'};
+        twitter.get('statuses/user_timeline', {user_id: _user.id_str, since_id: parseInt(result.id_str), count: 200}, (error, result, response) => {
+          if (error || !result) return;
+          result.forEach((tweet) => {
+            if (tweet.user.id_str != user.id_str || !tweet || !tweet.id_str) return;
+            Tweet.findOne({id_str: tweet.id_str}, (err, result) => {
+              if (err) return console.error(err);
+              if (result) return;
+              new Tweet({
+                id_str: tweet.id_str,
+                coordinates: tweet.coordinates,
+                created_at: tweet.created_at,
+                possibly_sensitive: tweet.possibly_sensitive,
+                source: tweet.source,
+                scopes: tweet.scopes,
+                text: tweet.text,
+                _user: user._id,
+              }).save((err, result) => {
+                if (err) return console.error(`Failed to save new tweet from user '${user.screen_name}'!`);
+                console.log(`Saved new tweet from user '${user.screen_name}'!`);
+                q.push((cb) => {
+                  (async function() {
+                    console.log(`Archiving tweet ${tweet.id_str}...`);
+                    const instance = await phantom.create();
+                    const page = await instance.createPage();
+                    await page.on("onResourceRequested", function(requestData) {
+                      //console.info('Requesting', requestData.url)
+                    });
 
-                  const status = await page.open(`https://web.archive.org/save/https://twitter.com/${user.screen_name}/status/${tweet.id_str}`);
-                  //console.log(status);
+                    const status = await page.open(`https://web.archive.org/save/https://twitter.com/${user.screen_name}/status/${tweet.id_str}`);
+                    //console.log(status);
 
-                  const content = await page.property('content');
-                  //console.log(content);
+                    const content = await page.property('content');
+                    //console.log(content);
 
-                  await instance.exit();
-                  Tweet.where({id_str: tweet.id_str}).update({
-                    archive_link: `https://web.archive.org/web/https://twitter.com/${user.screen_name}/status/${tweet.id_str}`
-                  }, (err, result) => {
-                    if (err) return cb();
-                    console.log(`Saved archive link for tweet ${tweet.id_str}.`);
-                    cb();
-                  });
-                }());
+                    await instance.exit();
+                    Tweet.where({id_str: tweet.id_str}).update({
+                      archive_link: `https://web.archive.org/web/https://twitter.com/${user.screen_name}/status/${tweet.id_str}`
+                    }, (err, result) => {
+                      if (err) return cb();
+                      console.log(`Saved archive link for tweet ${tweet.id_str}.`);
+                      cb();
+                    });
+                  }());
+                });
               });
             });
           });
         });
       });
+  };
+
+  const startInterval = (user) => {
+    fetchTweets(user);
+    setInterval(() => {
+      fetchTweets(user);
     }, config.get('archival.interval') * 1000);
   };
 

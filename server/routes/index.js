@@ -60,7 +60,7 @@ router.get('/:username/:page', (req, res, next) => {
 
       Tweet.find({_user: req.searchedUser._id})
         .sort({created_at: -1})
-        .skip(req.page * perPage)
+        .skip((req.page - 1) * perPage)
         .limit(perPage)
         .exec((err, result) => {
           if (err) return next(new Error(err));
