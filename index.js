@@ -67,7 +67,7 @@ const trackTweets = (_user) => {
       twitter.get('statuses/user_timeline', {user_id: _user.id_str, count: 200}, (error, result, response) => {
         if (error || !result) return;
         result.forEach((tweet) => {
-          if (tweet.user.id_str != user.id_str) return;
+          if (tweet.user.id_str != user.id_str || !tweet || !tweet.id_str) return;
           Tweet.findOne({id_str: tweet.id_str}, (err, result) => {
             if (err) return console.error(err);
             if (result) return;

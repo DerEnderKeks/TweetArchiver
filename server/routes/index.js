@@ -37,6 +37,7 @@ router.get('/', (req, res, next) => {
     .find()
     .exec((err, result) => {
       if (err) return next(new Error(err));
+      if (!result) result = [];
       res.render('index', {
         title: 'TweetArchiver',
         users: result
